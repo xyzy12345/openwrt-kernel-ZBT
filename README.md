@@ -38,8 +38,8 @@ The compilation workflow includes:
 ### Kernel Configuration
 
 Kernel configurations are stored in `kernel/config_path/`:
-- `config-6.6.73` - Configuration for kernel 6.6.73
-- `config-6.12` - Configuration for kernel 6.12
+- `config-6.12` - Configuration for kernel 6.12 (currently used)
+- `config-6.6.73` - Configuration for kernel 6.6.73 (alternative)
 
 ## Technical Details
 

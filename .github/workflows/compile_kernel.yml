@@ -36,20 +36,28 @@ jobs:
         run: |
           echo "=== Disk Space After Cleanup ==="
           df -h
+          # Get available space in KB (column 4 from df output)
           AVAILABLE_KB=$(df / | tail -1 | awk '{print $4}')
-          AVAILABLE_GB=$(echo "$AVAILABLE_KB" | awk '{
-            if ($1 ~ /G$/) {
-              gsub(/G$/, "", $1); print $1
-            } else if ($1 ~ /M$/) {
-              gsub(/M$/, "", $1); print $1/1024
-            } else {
-              print $1/1024/1024
-            }
-          }')
+          # Convert to GB using bash arithmetic (strip any suffix and convert)
+          AVAILABLE_NUM=$(echo "$AVAILABLE_KB" | sed 's/[^0-9.]//g')
+          
+          # Determine if it's already in GB, MB, or KB and convert accordingly
+          if echo "$AVAILABLE_KB" | grep -q "G"; then
+            AVAILABLE_GB="$AVAILABLE_NUM"
+          elif echo "$AVAILABLE_KB" | grep -q "M"; then
+            AVAILABLE_GB=$(awk "BEGIN {printf \"%.2f\", $AVAILABLE_NUM/1024}")
+          elif echo "$AVAILABLE_KB" | grep -q "T"; then
+            AVAILABLE_GB=$(awk "BEGIN {printf \"%.2f\", $AVAILABLE_NUM*1024}")
+          else
+            # Assume KB
+            AVAILABLE_GB=$(awk "BEGIN {printf \"%.2f\", $AVAILABLE_NUM/1024/1024}")
+          fi
+          
           echo "Available space: ${AVAILABLE_KB}"
           echo "Available space in GB: ${AVAILABLE_GB}"
-          # Check if we have at least 15GB free
-          if (( $(echo "$AVAILABLE_GB < 15" | bc -l) )); then
+          
+          # Check if we have at least 15GB free using awk for comparison
+          if awk "BEGIN {exit !($AVAILABLE_GB < 15)}"; then
             echo "ERROR: Insufficient disk space. Need at least 15GB, have ${AVAILABLE_GB}GB"
             exit 1
           fi
