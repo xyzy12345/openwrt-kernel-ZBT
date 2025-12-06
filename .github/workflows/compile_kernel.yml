@@ -10,13 +10,13 @@ jobs:
        uses: actions/checkout@v4
   
      - name: Check initial disk space
-        run: # ... (磁盘检查代码)
+         run: # ... (磁盘检查代码)
   
-    - name: Free up disk space  
+     - name: Free up disk space  
        run: # ... (清理代码)
   
-  - name: Check disk space after cleanup
-    run: # ... (验证代码)
+     - name: Check disk space after cleanup
+        run: # ... (验证代码)
   
       - name: Compile the Kernel
         uses: ophub/amlogic-s9xxx-armbian@main
