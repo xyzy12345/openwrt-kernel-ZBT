@@ -24,8 +24,7 @@ The compilation workflow includes:
    - GHC (Haskell compiler)
    - CodeQL tools
    - APT cache
-   - Temporary files
-3. **Kernel Compilation** - Compiles kernel version 6.6.73 with custom configuration
+3. **Kernel Compilation** - Compiles kernel version 6.12 with custom configuration
 
 ## Usage
 
@@ -44,7 +43,7 @@ Kernel configurations are stored in `kernel/config_path/`:
 
 ## Technical Details
 
-- **Kernel Version**: 6.6.73
+- **Kernel Version**: 6.12
 - **Kernel Sign**: -mt7981-custom
 - **Base Repository**: padavanonly/immortalwrt-mt798x-6.6
 - **Build Tool**: ophub/amlogic-s9xxx-armbian
