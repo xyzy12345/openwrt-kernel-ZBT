@@ -1,16 +1,16 @@
-name: Compile OpenWrt Kernel for MT7981
+name: Compile Kernel for MT7981 (OpenWrt 6.12)
 on:
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Compile the kernel
+      - name: Compile the Kernel
         uses: ophub/amlogic-s9xxx-armbian@main
         with:
           build_target: kernel
-          kernel_version: 6.6.73
+          kernel_version: 6.12
           kernel_auto: false
           kernel_sign: -mt7981-custom
           kernel_repo: padavanonly/immortalwrt-mt798x-6.6
