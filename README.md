@@ -31,7 +31,7 @@ The compilation workflow includes:
 
 ### Manual Trigger
 
-1. Go to the [Actions tab](../../actions)
+1. Go to the Actions tab in your GitHub repository
 2. Select "Compile OpenWrt Kernel for MT7981" workflow
 3. Click "Run workflow"
 4. Wait for compilation to complete

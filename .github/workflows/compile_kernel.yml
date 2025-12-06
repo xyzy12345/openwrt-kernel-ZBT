@@ -30,16 +30,30 @@ jobs:
           sudo rm -rf /opt/hostedtoolcache/CodeQL
           # Clear APT cache
           sudo rm -rf /var/cache/apt/archives/*
-          # Clear temp files
-          sudo rm -rf /tmp/*
           echo "Cleanup completed"
 
       - name: Check disk space after cleanup
         run: |
           echo "=== Disk Space After Cleanup ==="
           df -h
-          AVAILABLE=$(df / | tail -1 | awk '{print $4}')
-          echo "Available space: ${AVAILABLE}"
+          AVAILABLE_KB=$(df / | tail -1 | awk '{print $4}')
+          AVAILABLE_GB=$(echo "$AVAILABLE_KB" | awk '{
+            if ($1 ~ /G$/) {
+              gsub(/G$/, "", $1); print $1
+            } else if ($1 ~ /M$/) {
+              gsub(/M$/, "", $1); print $1/1024
+            } else {
+              print $1/1024/1024
+            }
+          }')
+          echo "Available space: ${AVAILABLE_KB}"
+          echo "Available space in GB: ${AVAILABLE_GB}"
+          # Check if we have at least 15GB free
+          if (( $(echo "$AVAILABLE_GB < 15" | bc -l) )); then
+            echo "ERROR: Insufficient disk space. Need at least 15GB, have ${AVAILABLE_GB}GB"
+            exit 1
+          fi
+          echo "Disk space check passed: ${AVAILABLE_GB}GB available"
 
       - name: Compile the kernel
         uses: ophub/amlogic-s9xxx-armbian@main
