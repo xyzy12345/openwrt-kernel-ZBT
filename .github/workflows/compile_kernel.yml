@@ -6,6 +6,41 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check initial disk space
+        run: |
+          echo "=== Disk Space Before Cleanup ==="
+          df -h
+          echo "=== Disk Usage by Directory ==="
+          sudo du -h --max-depth=1 / 2>/dev/null | sort -hr | head -20
+
+      - name: Free up disk space
+        run: |
+          echo "Cleaning up disk space..."
+          # Remove unnecessary packages
+          sudo apt-get clean
+          sudo apt-get autoclean
+          sudo apt-get autoremove -y
+          # Remove large packages that are not needed for kernel compilation
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          # Clear APT cache
+          sudo rm -rf /var/cache/apt/archives/*
+          # Clear temp files
+          sudo rm -rf /tmp/*
+          echo "Cleanup completed"
+
+      - name: Check disk space after cleanup
+        run: |
+          echo "=== Disk Space After Cleanup ==="
+          df -h
+          AVAILABLE=$(df / | tail -1 | awk '{print $4}')
+          echo "Available space: ${AVAILABLE}"
+
       - name: Compile the kernel
         uses: ophub/amlogic-s9xxx-armbian@main
         with:
